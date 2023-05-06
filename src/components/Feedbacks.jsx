@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 // import "firebase/firestore";
@@ -8,20 +8,23 @@ import "firebase/analytics";
 import { styles } from "../styles";
 import { SectionWrapper } from "../hoc";
 import { fadeIn, textVariant } from "../utils/motion";
-import { testimonials } from "../constants";
+// import { testimonials } from "../constants";
 import SignUpButton from "./SignUpButton";
 import { auth } from "../utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { db } from "../utils/firebase";
+import { getDocs, collection } from "firebase/firestore";
 // import { useCollectionData } from "react-firebase-hooks/firestore";
 // import { initializeApp } from "firebase/app";
 // import { getFirestore } from "firebase/firestore";
 
 const FeedbackCard = ({
-  index,
+  // index,
   first_name,
   last_name,
+  name,
   picture_url,
-  title,
+  time,
   message,
   user,
 }) => (
@@ -39,10 +42,10 @@ const FeedbackCard = ({
         <div className="mt-7 flex justify-between items-center gap-1">
           <div className="flex-1 flex flex-col">
             <p className="text-white font-medium text-[16px]">
-              <span className="blue-text-gradient">@</span> {first_name}{" "}
+              <span className="blue-text-gradient">@</span> {name}{" "}
               {last_name}
             </p>
-            <p className="mt-1 text-secondary text-[12px]">{title}</p>
+            {/* <p className="mt-1 text-secondary text-[12px]">{time}</p> */}
           </div>
 
           <img
@@ -103,7 +106,7 @@ const FeedbackCardSignIn = ({ user }) => {
       )}
 
       <div className="mt-1">
-        <p className="text-white tracking-wider text-[18px]"></p>
+        {/* <p className="text-white tracking-wider text-[18px]"></p> */}
 
         <div className="mt-7 flex justify-between items-center gap-1">
           <div className="flex-1 flex flex-col">
@@ -119,13 +122,30 @@ const FeedbackCardSignIn = ({ user }) => {
 
 const Feedbacks = () => {
   const [user, loading] = useAuthState(auth);
+  const [testimonials, setTestominals] = useState([]);
 
   // const messagesRef = firestore.collection("messages");
   // const query = messagesRef.orderBy("createdAt").limit(25);
-
   // const [messages] = useCollectionData(query, { idField: "id" });
-
   // console.log("firebase messages", messages);
+
+  const testimonialsCollectionRef = collection(db, "testimonials");
+
+  useEffect(() => {
+    const getTestomonials = async () => {
+      try {
+        const data = await getDocs(testimonialsCollectionRef);
+        
+        const filteredData = data.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        console.log("filteredData", filteredData);
+        setTestominals(filteredData);
+      } catch (err) {}
+    };
+    getTestomonials();
+  }, []);
 
   return (
     <div className={`mt-12 bg-black-100 rounded-[20px]`}>
