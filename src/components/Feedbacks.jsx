@@ -1,38 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-// import "firebase/firestore";
 import "firebase/auth";
 import "firebase/analytics";
 
 import { styles } from "../styles";
 import { SectionWrapper } from "../hoc";
 import { fadeIn, textVariant } from "../utils/motion";
-// import { testimonials } from "../constants";
 import SignUpButton from "./SignUpButton";
 import { auth } from "../utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { db } from "../utils/firebase";
-import { getDocs, collection } from "firebase/firestore";
-// import { useCollectionData } from "react-firebase-hooks/firestore";
-// import { initializeApp } from "firebase/app";
-// import { getFirestore } from "firebase/firestore";
+import { getDocs, collection, addDoc } from "firebase/firestore";
+import toast, { Toaster } from 'react-hot-toast';
 
-const FeedbackCard = ({
-  // index,
-  first_name,
-  last_name,
-  name,
-  picture_url,
-  time,
-  message,
-  user,
-}) => (
+const FeedbackCard = ({ name, message, userIcon, userEmail }) => (
   <>
-    <motion.div
-      // variants={fadeIn("", "spring", index * 0.5, 0.75)}
-      className="bg-black-200 p-10 rounded-3xl xs:w-[320px] w-full"
-    >
+    <motion.div className="bg-black-200 p-10 rounded-3xl xs:w-[320px] w-full">
       <p className="text-white font-black text-[48px]">"</p>
       <p className="text-white font-black text-[22px]">{message}</p>
 
@@ -42,15 +26,14 @@ const FeedbackCard = ({
         <div className="mt-7 flex justify-between items-center gap-1">
           <div className="flex-1 flex flex-col">
             <p className="text-white font-medium text-[16px]">
-              <span className="blue-text-gradient">@</span> {name}{" "}
-              {last_name}
+              <span className="blue-text-gradient">@</span>{" "}
+              {name !== null ? name : "Anonymus 👻"}{" "}
             </p>
-            {/* <p className="mt-1 text-secondary text-[12px]">{time}</p> */}
           </div>
 
           <img
-            src={picture_url}
-            alt={`feedback_by-${first_name}`}
+            src={userIcon}
+            alt={`feedback_by-${name}`}
             className="w-10 h-10 rounded-full object-cover"
           />
         </div>
@@ -59,20 +42,53 @@ const FeedbackCard = ({
   </>
 );
 
-const FeedbackCardSignIn = ({ user }) => {
+const FeedbackCardSignIn = ({ user, onGetTestimonials }) => {
   const [text, setText] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userIcon, setUserIcon] = useState("");
+  const [userEmail, setUserEmail] = useState("");
 
-  // const handletextChange = (event) => {
-  //   setText(event.target.value);
-  // };
+  useEffect(() => {
+    setUserName(user?.displayName);
+    setUserIcon(user?.photoURL);
+    setUserEmail(user?.email);
+  }, []);
 
-  const handleSubmit = (event) => {
+  const testimonialsCollectionRef = collection(db, "testimonials");
+
+  const handleTextChange = (event) => {
+    setText(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    try {
+      await addDoc(testimonialsCollectionRef, {
+        message: text,
+        name: userName,
+        userEmail: userEmail,
+        userIcon: userIcon,
+      });
+      toast.success("Successfully submitted !");
+      onGetTestimonials();
+      auth.signOut();
+    } catch (err) {
+      toast.error("Something went wrong !", {
+        icon: "👏",
+        style: {
+          borderRadius: "10px",
+          background: "#333",
+          color: "#fff",
+        },
+      });
+      console.error(err);
+    }
     console.log("SEND", text);
     setText("");
   };
 
   console.log("text", text);
+  console.log("user", user);
 
   return (
     <motion.div
@@ -92,14 +108,14 @@ const FeedbackCardSignIn = ({ user }) => {
               rows="6"
               class="block p-3.5 w-full resize-none text-sm rounded-md"
               placeholder="Write here !"
-              // onChange={handleMessageChange}
+              onChange={handleTextChange}
             ></textarea>
 
             <button
               type="submit"
               className="bg-indigo-600 hover:bg-indigo-800 text-white font-bold my-2 px-4 rounded"
             >
-              Send
+              Post!
             </button>
           </form>
         </>
@@ -124,27 +140,24 @@ const Feedbacks = () => {
   const [user, loading] = useAuthState(auth);
   const [testimonials, setTestominals] = useState([]);
 
-  // const messagesRef = firestore.collection("messages");
-  // const query = messagesRef.orderBy("createdAt").limit(25);
-  // const [messages] = useCollectionData(query, { idField: "id" });
-  // console.log("firebase messages", messages);
-
   const testimonialsCollectionRef = collection(db, "testimonials");
 
+  const getTestimonials = async () => {
+    console.log("etreksaaaaaaaa");
+    try {
+      const data = await getDocs(testimonialsCollectionRef);
+
+      const filteredData = data.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      console.log("filteredData", filteredData);
+      setTestominals(filteredData);
+    } catch (err) {}
+  };
+
   useEffect(() => {
-    const getTestomonials = async () => {
-      try {
-        const data = await getDocs(testimonialsCollectionRef);
-        
-        const filteredData = data.docs.map((doc) => ({
-          ...doc.data(),
-          id: doc.id,
-        }));
-        console.log("filteredData", filteredData);
-        setTestominals(filteredData);
-      } catch (err) {}
-    };
-    getTestomonials();
+    getTestimonials();
   }, []);
 
   return (
@@ -162,7 +175,11 @@ const Feedbacks = () => {
           <FeedbackCard key={index} index={index} {...testimonial} />
         ))}
 
-        <FeedbackCardSignIn key={testimonials.length + 1} user={user} />
+        <FeedbackCardSignIn
+          onGetTestimonials={getTestimonials}
+          key={testimonials.length + 1}
+          user={user}
+        />
       </div>
     </div>
   );

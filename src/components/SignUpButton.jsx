@@ -38,7 +38,7 @@ const SignUpButton = () => {
         {!user && (
           <button onClick={signInWithGithub} className="flex justify-center">
             <p className="flex justify-center mt-3 font-bold mr-2">
-              SignIn with Github{" "}
+              Sign in with GitHub{" "}
             </p>
             <img
               src={github}
