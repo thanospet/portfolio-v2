@@ -82,7 +82,7 @@ const Works = () => {
         >
           Bellow you can find some of the projects I've built. Some where part of my internship, some 
           others i did on free time. They have a brief summary followed by the technologies used. You can also 
-          click on the top right on each card to find out more!
+          click on the top right on each card to find out more! NOTE : As of now, they are not public. The code needs a bit of cleaning 🤓 ! 
         </motion.p>
       </div>
 

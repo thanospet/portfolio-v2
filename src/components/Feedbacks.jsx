@@ -12,10 +12,11 @@ import { auth } from "../utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { db } from "../utils/firebase";
 import { getDocs, collection, addDoc } from "firebase/firestore";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 
 const FeedbackCard = ({ name, message, userIcon, userEmail }) => (
   <>
+    
     <motion.div className="bg-black-200 p-10 rounded-3xl xs:w-[320px] w-full">
       <p className="text-white font-black text-[48px]">"</p>
       <p className="text-white font-black text-[22px]">{message}</p>
@@ -43,7 +44,7 @@ const FeedbackCard = ({ name, message, userIcon, userEmail }) => (
 );
 
 const FeedbackCardSignIn = ({ user, onGetTestimonials }) => {
-  const [text, setText] = useState("");
+  const [text, setText] = useState(" ");
   const [userName, setUserName] = useState("");
   const [userIcon, setUserIcon] = useState("");
   const [userEmail, setUserEmail] = useState("");
@@ -61,46 +62,38 @@ const FeedbackCardSignIn = ({ user, onGetTestimonials }) => {
   };
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault(); 
+  console.log("text", text);
+  console.log("user", user);
     try {
       await addDoc(testimonialsCollectionRef, {
         message: text,
         name: userName,
-        userEmail: userEmail,
         userIcon: userIcon,
-      });
-      toast.success("Successfully submitted !");
+      })
+      toast.error("Successfully submitted !");
       onGetTestimonials();
       auth.signOut();
     } catch (err) {
-      toast.error("Something went wrong !", {
-        icon: "👏",
-        style: {
-          borderRadius: "10px",
-          background: "#333",
-          color: "#fff",
-        },
-      });
+      toast.error("Something went wrong. Please refresh the page.");
       console.error(err);
     }
     console.log("SEND", text);
-    setText("");
   };
 
-  console.log("text", text);
-  console.log("user", user);
 
   return (
     <motion.div
-      // variants={fadeIn("", "spring", index * 0.5, 0.75)}
       className="bg-black-200 p-10 rounded-3xl xs:w-[320px] w-full"
     >
+      
       {!user ? (
         <p className="text-white font-black text-[22px]">
           Are you a friend? A colleague? Sign in and comment on my work!
         </p>
       ) : (
         <>
+        <Toaster position="bottom-right"/>
           <p className="text-white font-black text-[48px]">"</p>
           <form onSubmit={handleSubmit} className="p-4 rounded-l">
             <textarea
@@ -122,7 +115,6 @@ const FeedbackCardSignIn = ({ user, onGetTestimonials }) => {
       )}
 
       <div className="mt-1">
-        {/* <p className="text-white tracking-wider text-[18px]"></p> */}
 
         <div className="mt-7 flex justify-between items-center gap-1">
           <div className="flex-1 flex flex-col">
@@ -143,7 +135,7 @@ const Feedbacks = () => {
   const testimonialsCollectionRef = collection(db, "testimonials");
 
   const getTestimonials = async () => {
-    console.log("etreksaaaaaaaa");
+    console.log("run");
     try {
       const data = await getDocs(testimonialsCollectionRef);
 

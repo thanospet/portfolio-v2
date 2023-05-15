@@ -47,14 +47,6 @@ const Navbar = () => {
               <a href={`#${link.id}`}>{link.title}</a>
             </li>
           ))}
-          <li
-            className={`${
-              active === 'Sign In' ? "text-white" : "text-secondary"
-            } hover:text-white text-[18px] font-medium cursor-pointer`}
-          >
-            {" "}
-            <a href="signin" onClick={handleModalState}>Sign In</a>
-          </li>
         </ul>
 
         <div className="sm:hidden flex flex-1 justify-end items-center">

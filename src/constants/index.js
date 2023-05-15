@@ -127,7 +127,7 @@ const experiences = [
     iconBg: "#383E56",
     date: "October 2017 - October 2022",
     points: [
-      "Learned the basics almost in every field of computer science from hardware to software.",
+      "Learned the basics almost in every field of computer science, from hardware to software.",
       "Member of a team specialized in machine learning and data analysis.",
     ],
   },
