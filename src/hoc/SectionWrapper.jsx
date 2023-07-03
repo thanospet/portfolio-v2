@@ -16,8 +16,6 @@ const StarWrapper = (Component, idName) =>
         <span className='hash-span' id={idName}>
           &nbsp;
         </span>
-        {/* einai to idio me to na to dinw <a/>??? diladi douleuei san link me vasi to id(pou kanw wrap to sxport kathe selidas) */}
-        {/* apoti vlepw oti element valw douleuei */}
 
         <Component />
       </motion.section>

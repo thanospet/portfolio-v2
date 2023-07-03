@@ -9,7 +9,7 @@ import { fadeIn, textVariant } from "../utils/motion";
 import ProgressBar from "./Progressbar";
 
 const ServiceCard = (
-  { service, index } //here i did props my way, for practice
+  { service, index } 
 ) => (
   <Tilt className="xs:w-[250px] w-full">
     <motion.div
@@ -58,7 +58,7 @@ const About = () => {
 
       <div className="mt-16 flex flex-wrap gap-12">
         {services.map((service, index) => (
-          <ServiceCard key={index} service={service} index={index} /> //Here are the cards, mt scales by 4,flex-wrap > flex row gia mobile friendly
+          <ServiceCard key={index} service={service} index={index} /> 
         ))}
       </div>
     </>

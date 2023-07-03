@@ -6,8 +6,6 @@ import { auth } from "../utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import CanvasLoader from "./Loader";
 
-//5f9626d367b88394c3c1255ba1e3d2a052bd80e5 client secret
-// const CLIENT_ID = "b2fcc6d24febd9ba9674";
 
 const SignUpButton = () => {
   const [user, loading] = useAuthState(auth);
