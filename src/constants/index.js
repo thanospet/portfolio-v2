@@ -192,7 +192,7 @@ const projects = [
       },
     ],
     image: bse,
-    source_code_link: "https://github.com/",
+    source_code_link: "https://github.com/thanospet/Business-Solution-Eats",
   },
   {
     name: "Snowball Game",
@@ -213,7 +213,7 @@ const projects = [
       },
     ],
     image: snowgame,
-    source_code_link: "https://github.com/",
+    source_code_link: "https://github.com/thanospet/snowball-game",
   },
   {
     name: "Password Strength Meter",
@@ -234,7 +234,7 @@ const projects = [
       },
     ],
     image: pwd,
-    source_code_link: "https://github.com/",
+    source_code_link: "https://github.com/thanospet/",
   },
 ];
 
