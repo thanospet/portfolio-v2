@@ -53,7 +53,7 @@ const services = [
   {
     title: "Javascript",
     icon: mobile,
-    skill: 2,
+    skill: 3,
   },
   {
     title: "CSS",
